@@ -45,6 +45,7 @@
 //! [0]
 class GlWidget : public QGLWidget
 {
+    //! [0]
     Q_OBJECT
 
 public:
@@ -52,16 +53,28 @@ public:
     ~GlWidget();
     QSize sizeHint() const;
 
+    //! [1]
 protected:
+    //! [1]
     void initializeGL();
     void resizeGL(int width, int height);
     void paintGL();
+    //! [2]
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
 
 private:
+    //! [2]
     QMatrix4x4 pMatrix;
     QGLShaderProgram shaderProgram;
     QVector<QVector3D> vertices;
+    //! [3]
+    double alpha;
+    double beta;
+    double distance;
+    QPoint lastMousePosition;
 };
-//! [0]
+//! [3]
 
 #endif // GLWIDGET_H

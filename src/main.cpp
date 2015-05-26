@@ -39,7 +39,6 @@
 #include <QApplication>
 #include "glwidget.h"
 
-//! [0]
 int main(int argc, char **argv)
 {
     QApplication a(argc, argv);
@@ -49,4 +48,3 @@ int main(int argc, char **argv)
 
     return a.exec();
 }
-//! [0]
