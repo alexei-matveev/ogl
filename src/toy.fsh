@@ -1,7 +1,7 @@
 // Created by inigo quilez - iq/2013
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 
-// A list of usefull distance function to simple primitives, and an example on how to 
+// A list of usefull distance function to simple primitives, and an example on how to
 // do some interesting boolean operations, repetition and displacement.
 //
 // More info here: http://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
@@ -79,7 +79,7 @@ float sdCone( in vec3 p, in vec3 c )
     float d1 = -p.y-c.z;
     float d2 = max( dot(q,c.xy), p.y);
     return length(max(vec2(d1,d2),0.0)) + min(max(d1,d2), 0.);
-#endif    
+#endif
 }
 
 float length2( vec2 p )
@@ -168,8 +168,8 @@ vec2 map( in vec3 pos )
 											  pos.y,
 											  0.02+0.5*length(pos-vec3(-2.0,0.2, 0.0))),
 									     vec3(0.05,1.0,0.05)), vec2(0.02,0.6))), 51.0 ) );
-	res = opU( res, vec2( 0.7*sdSphere(    pos-vec3(-2.0,0.25,-1.0), 0.2 ) + 
-					                   0.03*sin(50.0*pos.x)*sin(50.0*pos.y)*sin(50.0*pos.z), 
+	res = opU( res, vec2( 0.7*sdSphere(    pos-vec3(-2.0,0.25,-1.0), 0.2 ) +
+					                   0.03*sin(50.0*pos.x)*sin(50.0*pos.y)*sin(50.0*pos.z),
                                        65.0 ) );
 	res = opU( res, vec2( 0.5*sdTorus( opTwist(pos-vec3(-2.0,0.25, 2.0)),vec2(0.20,0.05)), 46.7 ) );
 
@@ -180,13 +180,13 @@ vec2 castRay( in vec3 ro, in vec3 rd )
 {
     float tmin = 1.0;
     float tmax = 20.0;
-    
+
 #if 0
     float tp1 = (0.0-ro.y)/rd.y; if( tp1>0.0 ) tmax = min( tmax, tp1 );
     float tp2 = (1.6-ro.y)/rd.y; if( tp2>0.0 ) { if( ro.y>1.6 ) tmin = max( tmin, tp2 );
                                                  else           tmax = min( tmax, tp2 ); }
 #endif
-    
+
 	float precis = 0.002;
     float t = tmin;
     float m = -1.0;
@@ -240,14 +240,14 @@ float calcAO( in vec3 pos, in vec3 nor )
         occ += -(dd-hr)*sca;
         sca *= 0.95;
     }
-    return clamp( 1.0 - 3.0*occ, 0.0, 1.0 );    
+    return clamp( 1.0 - 3.0*occ, 0.0, 1.0 );
 }
 
 
 
 
 vec3 render( in vec3 ro, in vec3 rd )
-{ 
+{
     vec3 col = vec3(0.8, 0.9, 1.0);
     vec2 res = castRay(ro,rd);
     float t = res.x;
@@ -257,18 +257,18 @@ vec3 render( in vec3 ro, in vec3 rd )
         vec3 pos = ro + t*rd;
         vec3 nor = calcNormal( pos );
         vec3 ref = reflect( rd, nor );
-        
-        // material        
+
+        // material
 		col = 0.45 + 0.3*sin( vec3(0.05,0.08,0.10)*(m-1.0) );
-		
+
         if( m<1.5 )
         {
-            
+
             float f = mod( floor(5.0*pos.z) + floor(5.0*pos.x), 2.0);
             col = 0.4 + 0.1*f*vec3(1.0);
         }
 
-        // lighitng        
+        // lighitng
         float occ = calcAO( pos, nor );
 		vec3  lig = normalize( vec3(-0.6, 0.7, -0.5) );
 		float amb = clamp( 0.5+0.5*nor.y, 0.0, 1.0 );
@@ -277,7 +277,7 @@ vec3 render( in vec3 ro, in vec3 rd )
         float dom = smoothstep( -0.1, 0.1, ref.y );
         float fre = pow( clamp(1.0+dot(nor,rd),0.0,1.0), 2.0 );
 		float spe = pow(clamp( dot( ref, lig ), 0.0, 1.0 ),16.0);
-        
+
         dif *= softshadow( pos, lig, 0.02, 2.5 );
         dom *= softshadow( pos, ref, 0.02, 2.5 );
 
@@ -313,20 +313,20 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 p = -1.0+2.0*q;
 	p.x *= iResolution.x/iResolution.y;
     vec2 mo = iMouse.xy/iResolution.xy;
-		 
+
 	float time = 15.0 + iGlobalTime;
 
-	// camera	
+	// camera
 	vec3 ro = vec3( -0.5+3.2*cos(0.1*time + 6.0*mo.x), 1.0 + 2.0*mo.y, 0.5 + 3.2*sin(0.1*time + 6.0*mo.x) );
 	vec3 ta = vec3( -0.5, -0.4, 0.5 );
-	
+
 	// camera-to-world transformation
     mat3 ca = setCamera( ro, ta, 0.0 );
-    
+
     // ray direction
 	vec3 rd = ca * normalize( vec3(p.xy,2.5) );
 
-    // render	
+    // render
     vec3 col = render( ro, rd );
 
 	col = pow( col, vec3(0.4545) );
