@@ -40,7 +40,6 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 
-//! [0]
 GlWidget::GlWidget(QWidget *parent)
     : QGLWidget(QGLFormat(/* Additional format options */), parent)
 {
@@ -48,7 +47,6 @@ GlWidget::GlWidget(QWidget *parent)
     beta = -25;
     distance = 2.5;
 }
-//! [0]
 
 GlWidget::~GlWidget()
 {
@@ -59,10 +57,10 @@ QSize GlWidget::sizeHint() const
     return QSize(640, 480);
 }
 
-//! [1]
+//! [0]
 void GlWidget::initializeGL()
 {
-    //! [1]
+    //! [0]
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
@@ -72,7 +70,6 @@ void GlWidget::initializeGL()
     shaderProgram.addShaderFromSourceFile(QGLShader::Fragment, ":/fragmentShader.fsh");
     shaderProgram.link();
 
-    //! [2]
     vertices << QVector3D(-0.5, -0.5,  0.5) << QVector3D( 0.5, -0.5,  0.5) << QVector3D( 0.5,  0.5,  0.5) // Front
              << QVector3D( 0.5,  0.5,  0.5) << QVector3D(-0.5,  0.5,  0.5) << QVector3D(-0.5, -0.5,  0.5)
              << QVector3D( 0.5, -0.5, -0.5) << QVector3D(-0.5, -0.5, -0.5) << QVector3D(-0.5,  0.5, -0.5) // Back
@@ -85,8 +82,21 @@ void GlWidget::initializeGL()
              << QVector3D( 0.5,  0.5, -0.5) << QVector3D(-0.5,  0.5, -0.5) << QVector3D(-0.5,  0.5,  0.5)
              << QVector3D(-0.5, -0.5, -0.5) << QVector3D( 0.5, -0.5, -0.5) << QVector3D( 0.5, -0.5,  0.5) // Bottom
              << QVector3D( 0.5, -0.5,  0.5) << QVector3D(-0.5, -0.5,  0.5) << QVector3D(-0.5, -0.5, -0.5);
+    //! [1]
+    colors << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) // Front
+           << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) << QVector3D(1, 0, 0)
+           << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) // Back
+           << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) << QVector3D(1, 0, 0)
+           << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) // Left
+           << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) << QVector3D(0, 1, 0)
+           << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) // Right
+           << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) << QVector3D(0, 1, 0)
+           << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) // Top
+           << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) << QVector3D(0, 0, 1)
+           << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) // Bottom
+           << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) << QVector3D(0, 0, 1);
 }
-//! [2]
+//! [1]
 
 void GlWidget::resizeGL(int width, int height)
 {
@@ -100,16 +110,15 @@ void GlWidget::resizeGL(int width, int height)
     glViewport(0, 0, width, height);
 }
 
-//! [3]
+//! [2]
 void GlWidget::paintGL()
 {
-    //! [3]
+    //! [2]
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     QMatrix4x4 mMatrix;
     QMatrix4x4 vMatrix;
 
-    //! [4]
     QMatrix4x4 cameraTransformation;
     cameraTransformation.rotate(alpha, 0, 1, 0);
     cameraTransformation.rotate(beta, 1, 0, 0);
@@ -118,27 +127,28 @@ void GlWidget::paintGL()
     QVector3D cameraUpDirection = cameraTransformation * QVector3D(0, 1, 0);
 
     vMatrix.lookAt(cameraPosition, QVector3D(0, 0, 0), cameraUpDirection);
-    //! [4]
 
+    //! [3]
     shaderProgram.bind();
 
     shaderProgram.setUniformValue("mvpMatrix", pMatrix * vMatrix * mMatrix);
 
-    shaderProgram.setUniformValue("color", QColor(Qt::white));
-
     shaderProgram.setAttributeArray("vertex", vertices.constData());
     shaderProgram.enableAttributeArray("vertex");
+
+    shaderProgram.setAttributeArray("color", colors.constData());
+    shaderProgram.enableAttributeArray("color");
 
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
     shaderProgram.disableAttributeArray("vertex");
 
-    shaderProgram.release();
-    //! [5]
-}
-//! [5]
+    shaderProgram.disableAttributeArray("color");
 
-//! [6]
+    shaderProgram.release();
+}
+//! [3]
+
 void GlWidget::mousePressEvent(QMouseEvent *event)
 {
     lastMousePosition = event->pos();
@@ -175,9 +185,7 @@ void GlWidget::mouseMoveEvent(QMouseEvent *event)
 
     event->accept();
 }
-//! [6]
 
-//! [7]
 void GlWidget::wheelEvent(QWheelEvent *event)
 {
     int delta = event->delta();
@@ -194,4 +202,3 @@ void GlWidget::wheelEvent(QWheelEvent *event)
 
     event->accept();
 }
-//! [7]

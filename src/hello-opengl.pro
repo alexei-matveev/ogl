@@ -1,6 +1,6 @@
 QT += core gui opengl
 
-TARGET = rendering-in-3d
+TARGET = coloring
 
 TEMPLATE = app
 

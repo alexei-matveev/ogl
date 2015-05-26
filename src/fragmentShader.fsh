@@ -1,10 +1,12 @@
 #version 130
 
-uniform vec4 color;
+//! [0]
+in vec4 varyingColor;
 
 out vec4 fragColor;
 
 void main(void)
 {
-    fragColor = color;
+    fragColor = varyingColor;
 }
+//! [0]

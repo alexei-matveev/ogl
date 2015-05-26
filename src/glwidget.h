@@ -53,27 +53,28 @@ public:
     ~GlWidget();
     QSize sizeHint() const;
 
-    //! [1]
 protected:
-    //! [1]
     void initializeGL();
     void resizeGL(int width, int height);
     void paintGL();
-    //! [2]
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
 
+    //! [1]
 private:
-    //! [2]
+    //! [1]
     QMatrix4x4 pMatrix;
     QGLShaderProgram shaderProgram;
     QVector<QVector3D> vertices;
-    //! [3]
+    //! [2]
+    QVector<QVector3D> colors;
+    //! [2]
     double alpha;
     double beta;
     double distance;
     QPoint lastMousePosition;
+    //! [3]
 };
 //! [3]
 
