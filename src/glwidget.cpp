@@ -63,7 +63,7 @@ void GlWidget::initializeGL()
     qglClearColor(QColor(Qt::black));
 
     shaderProgram.addShaderFromSourceFile(QGLShader::Vertex, ":/vertexShader.vsh");
-    shaderProgram.addShaderFromSourceFile(QGLShader::Fragment, ":/fragmentShader.fsh");
+    shaderProgram.addShaderFromSourceFile(QGLShader::Fragment, ":/toy.fsh");
     shaderProgram.link();
 
     vertices << QVector3D(1, 0, -2) << QVector3D(0, 1, -2) << QVector3D(-1, 0, -2);

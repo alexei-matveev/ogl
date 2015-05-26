@@ -9,7 +9,8 @@ SOURCES += main.cpp\
 
 HEADERS += glwidget.h
 
-OTHER_FILES += fragmentShader.fsh\
-               vertexShader.vsh
+OTHER_FILES +=\
+               vertexShader.vsh\
+               toy.fsh
 
 RESOURCES += resources.qrc

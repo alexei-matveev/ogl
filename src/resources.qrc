@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>fragmentShader.fsh</file>
         <file>vertexShader.vsh</file>
+        <file>toy.fsh</file>
     </qresource>
 </RCC>

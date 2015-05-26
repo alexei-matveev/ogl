@@ -1,3 +1,9 @@
+#version 130
+
+uniform vec4 color;
+
+out vec4 fragColor;
+
 // Created by inigo quilez - iq/2013
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 
@@ -309,12 +315,14 @@ mat3 setCamera( in vec3 ro, in vec3 ta, float cr )
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
+    vec4 iResolution = vec4 (640, 480, 1, 1);
+    vec4 iMouse = vec4 (320, 240, 1, 1);
     vec2 q = fragCoord.xy/iResolution.xy;
     vec2 p = -1.0+2.0*q;
     p.x *= iResolution.x/iResolution.y;
     vec2 mo = iMouse.xy/iResolution.xy;
 
-    float time = 15.0 + iGlobalTime;
+    float time = 15.0; // + iGlobalTime;
 
     // camera
     vec3 ro = vec3( -0.5+3.2*cos(0.1*time + 6.0*mo.x), 1.0 + 2.0*mo.y, 0.5 + 3.2*sin(0.1*time + 6.0*mo.x) );
@@ -332,4 +340,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     col = pow( col, vec3(0.4545) );
 
     fragColor=vec4( col, 1.0 );
+}
+
+void main(void)
+{
+    // fragColor = color;
+    mainImage (fragColor, gl_FragCoord.xy);
 }
