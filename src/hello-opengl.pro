@@ -1,6 +1,6 @@
 QT += core gui opengl
 
-TARGET = hello-world
+TARGET = hello-opengl
 
 TEMPLATE = app
 
