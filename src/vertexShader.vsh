@@ -4,13 +4,13 @@
 uniform mat4 mvpMatrix;
 
 in vec4 vertex;
-in vec4 color;
+in vec2 textureCoordinate;
 
-out vec4 varyingColor;
+out vec2 varyingTextureCoordinate;
 
 void main(void)
 {
-    varyingColor = color;
+    varyingTextureCoordinate = textureCoordinate;
     gl_Position = mvpMatrix * vertex;
 }
 //! [0]

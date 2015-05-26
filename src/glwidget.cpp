@@ -40,6 +40,14 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 
+//! [0]
+#ifdef WIN32
+    #include <GL/glext.h>
+    PFNGLACTIVETEXTUREPROC pGlActiveTexture = NULL;
+    #define glActiveTexture pGlActiveTexture
+#endif //WIN32
+//! [0]
+
 GlWidget::GlWidget(QWidget *parent)
     : QGLWidget(QGLFormat(/* Additional format options */), parent)
 {
@@ -57,10 +65,16 @@ QSize GlWidget::sizeHint() const
     return QSize(640, 480);
 }
 
-//! [0]
+//! [1]
 void GlWidget::initializeGL()
 {
-    //! [0]
+    //! [1]
+    //! [2]
+    #ifdef WIN32
+        glActiveTexture = (PFNGLACTIVETEXTUREPROC) wglGetProcAddress((LPCSTR) "glActiveTexture");
+    #endif
+    //! [2]
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
@@ -82,21 +96,25 @@ void GlWidget::initializeGL()
              << QVector3D( 0.5,  0.5, -0.5) << QVector3D(-0.5,  0.5, -0.5) << QVector3D(-0.5,  0.5,  0.5)
              << QVector3D(-0.5, -0.5, -0.5) << QVector3D( 0.5, -0.5, -0.5) << QVector3D( 0.5, -0.5,  0.5) // Bottom
              << QVector3D( 0.5, -0.5,  0.5) << QVector3D(-0.5, -0.5,  0.5) << QVector3D(-0.5, -0.5, -0.5);
-    //! [1]
-    colors << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) // Front
-           << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) << QVector3D(1, 0, 0)
-           << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) // Back
-           << QVector3D(1, 0, 0) << QVector3D(1, 0, 0) << QVector3D(1, 0, 0)
-           << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) // Left
-           << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) << QVector3D(0, 1, 0)
-           << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) // Right
-           << QVector3D(0, 1, 0) << QVector3D(0, 1, 0) << QVector3D(0, 1, 0)
-           << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) // Top
-           << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) << QVector3D(0, 0, 1)
-           << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) // Bottom
-           << QVector3D(0, 0, 1) << QVector3D(0, 0, 1) << QVector3D(0, 0, 1);
+    //! [3]
+    textureCoordinates << QVector2D(0, 0) << QVector2D(1, 0) << QVector2D(1, 1) // Front
+                       << QVector2D(1, 1) << QVector2D(0, 1) << QVector2D(0, 0)
+                       << QVector2D(0, 0) << QVector2D(1, 0) << QVector2D(1, 1) // Back
+                       << QVector2D(1, 1) << QVector2D(0, 1) << QVector2D(0, 0)
+                       << QVector2D(0, 0) << QVector2D(1, 0) << QVector2D(1, 1) // Left
+                       << QVector2D(1, 1) << QVector2D(0, 1) << QVector2D(0, 0)
+                       << QVector2D(0, 0) << QVector2D(1, 0) << QVector2D(1, 1) // Right
+                       << QVector2D(1, 1) << QVector2D(0, 1) << QVector2D(0, 0)
+                       << QVector2D(0, 0) << QVector2D(1, 0) << QVector2D(1, 1) // Top
+                       << QVector2D(1, 1) << QVector2D(0, 1) << QVector2D(0, 0)
+                       << QVector2D(0, 0) << QVector2D(1, 0) << QVector2D(1, 1) // Bottom
+                       << QVector2D(1, 1) << QVector2D(0, 1) << QVector2D(0, 0);
+
+    texture = bindTexture(QPixmap(":/texture.png"));
+    //! [3]
+    //! [4]
 }
-//! [1]
+//! [4]
 
 void GlWidget::resizeGL(int width, int height)
 {
@@ -110,10 +128,10 @@ void GlWidget::resizeGL(int width, int height)
     glViewport(0, 0, width, height);
 }
 
-//! [2]
+//! [5]
 void GlWidget::paintGL()
 {
-    //! [2]
+    //! [5]
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     QMatrix4x4 mMatrix;
@@ -128,26 +146,32 @@ void GlWidget::paintGL()
 
     vMatrix.lookAt(cameraPosition, QVector3D(0, 0, 0), cameraUpDirection);
 
-    //! [3]
+    //! [6]
     shaderProgram.bind();
 
     shaderProgram.setUniformValue("mvpMatrix", pMatrix * vMatrix * mMatrix);
 
+    shaderProgram.setUniformValue("texture", 0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glActiveTexture(0);
+
     shaderProgram.setAttributeArray("vertex", vertices.constData());
     shaderProgram.enableAttributeArray("vertex");
 
-    shaderProgram.setAttributeArray("color", colors.constData());
-    shaderProgram.enableAttributeArray("color");
+    shaderProgram.setAttributeArray("textureCoordinate", textureCoordinates.constData());
+    shaderProgram.enableAttributeArray("textureCoordinate");
 
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
     shaderProgram.disableAttributeArray("vertex");
 
-    shaderProgram.disableAttributeArray("color");
+    shaderProgram.disableAttributeArray("textureCoordinate");
 
     shaderProgram.release();
 }
-//! [3]
+//! [6]
 
 void GlWidget::mousePressEvent(QMouseEvent *event)
 {

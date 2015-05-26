@@ -68,7 +68,8 @@ private:
     QGLShaderProgram shaderProgram;
     QVector<QVector3D> vertices;
     //! [2]
-    QVector<QVector3D> colors;
+    QVector<QVector2D> textureCoordinates;
+    GLuint texture;
     //! [2]
     double alpha;
     double beta;
