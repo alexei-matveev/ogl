@@ -1,6 +1,7 @@
 #version 130
 
 uniform vec4 color;
+uniform vec4 iResolution;
 
 out vec4 fragColor;
 
@@ -315,8 +316,8 @@ mat3 setCamera( in vec3 ro, in vec3 ta, float cr )
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    vec4 iResolution = vec4 (640, 480, 1, 1);
-    vec4 iMouse = vec4 (320, 240, 1, 1);
+    // vec4 iResolution = vec4 (640, 480, 1, 1);
+    vec4 iMouse = iResolution / 2;
     vec2 q = fragCoord.xy/iResolution.xy;
     vec2 p = -1.0+2.0*q;
     p.x *= iResolution.x/iResolution.y;

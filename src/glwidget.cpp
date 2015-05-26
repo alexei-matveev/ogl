@@ -96,6 +96,10 @@ void GlWidget::paintGL()
 
     shaderProgram.bind();
 
+    {
+        const QSize s = this->size();
+        shaderProgram.setUniformValue("iResolution", QVector4D(s.width(), s.height(), 1, 1));
+    }
     shaderProgram.setUniformValue("mvpMatrix", pMatrix * vMatrix * mMatrix);
 
     shaderProgram.setUniformValue("color", QColor(Qt::white));
