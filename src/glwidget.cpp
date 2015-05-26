@@ -66,7 +66,9 @@ void GlWidget::initializeGL()
     shaderProgram.addShaderFromSourceFile(QGLShader::Fragment, ":/toy.fsh");
     shaderProgram.link();
 
-    vertices << QVector3D(1, 0, -2) << QVector3D(0, 1, -2) << QVector3D(-1, 0, -2);
+    const float dep = -2;
+    vertices << QVector3D(1, -1, dep) << QVector3D(1, 1, dep) << QVector3D(-1, -1, dep)
+             << QVector3D(-1, -1, dep) << QVector3D(1, 1, dep) << QVector3D(-1, 1, dep);
 }
 //! [1]
 
