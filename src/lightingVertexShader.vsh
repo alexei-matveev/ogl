@@ -1,6 +1,5 @@
 #version 130
 
-//! [0]
 uniform mat4 mvpMatrix;
 uniform mat4 mvMatrix;
 uniform mat3 normalMatrix;
@@ -25,4 +24,3 @@ void main(void)
     varyingTextureCoordinate = textureCoordinate;
     gl_Position = mvpMatrix * vertex;
 }
-//! [0]

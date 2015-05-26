@@ -1,6 +1,6 @@
 QT += core gui opengl
 
-TARGET = lighting
+TARGET = buffer-objects
 
 TEMPLATE = app
 

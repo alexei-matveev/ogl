@@ -35,12 +35,12 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
 #include <QGLWidget>
 #include <QGLShaderProgram>
+#include <QGLBuffer>
 
 //! [0]
 class GlWidget : public QGLWidget
@@ -65,26 +65,27 @@ protected:
 private:
     //! [1]
     QMatrix4x4 pMatrix;
-    //! [2]
     QGLShaderProgram lightingShaderProgram;
-    QVector<QVector3D> cubeVertices;
-    QVector<QVector3D> cubeNormals;
-    QVector<QVector2D> cubeTextureCoordinates;
+    //! [2]
+    int numCubeVertices;
+    QGLBuffer cubeBuffer;
+    //! [2]
     GLuint cubeTexture;
     QGLShaderProgram coloringShaderProgram;
-    QVector<QVector3D> spotlightVertices;
-    QVector<QVector3D> spotlightColors;
+    //! [3]
+    int numSpotlightVertices;
+    QGLBuffer spotlightBuffer;
+    //! [3]
     double lightAngle;
-    //! [2]
     double alpha;
     double beta;
     double distance;
     QPoint lastMousePosition;
 
-    //! [3]
 private Q_SLOTS:
     void timeout();
+    //! [4]
 };
-//! [3]
+//! [4]
 
 #endif // GLWIDGET_H
