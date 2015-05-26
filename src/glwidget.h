@@ -65,17 +65,25 @@ protected:
 private:
     //! [1]
     QMatrix4x4 pMatrix;
-    QGLShaderProgram shaderProgram;
-    QVector<QVector3D> vertices;
     //! [2]
-    QVector<QVector2D> textureCoordinates;
-    GLuint texture;
+    QGLShaderProgram lightingShaderProgram;
+    QVector<QVector3D> cubeVertices;
+    QVector<QVector3D> cubeNormals;
+    QVector<QVector2D> cubeTextureCoordinates;
+    GLuint cubeTexture;
+    QGLShaderProgram coloringShaderProgram;
+    QVector<QVector3D> spotlightVertices;
+    QVector<QVector3D> spotlightColors;
+    double lightAngle;
     //! [2]
     double alpha;
     double beta;
     double distance;
     QPoint lastMousePosition;
+
     //! [3]
+private Q_SLOTS:
+    void timeout();
 };
 //! [3]
 

@@ -1,6 +1,6 @@
 QT += core gui opengl
 
-TARGET = texture-mapping
+TARGET = lighting
 
 TEMPLATE = app
 
@@ -9,7 +9,9 @@ SOURCES += main.cpp\
 
 HEADERS += glwidget.h
 
-OTHER_FILES += fragmentShader.fsh\
-               vertexShader.vsh
+OTHER_FILES += coloringFragmentShader.fsh\
+               coloringVertexShader.vsh\
+               lightingFragmentShader.fsh\
+               lightingVertexShader.vsh
 
 RESOURCES += resources.qrc
