@@ -1,6 +1,6 @@
 QT += core gui opengl
 
-TARGET = buffer-objects
+TARGET = hello-world
 
 TEMPLATE = app
 
