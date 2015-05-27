@@ -79,10 +79,9 @@ void GlWidget::initializeGL()
         // These vertices encode a square big enough to cover the
         // screen for the unit trafo matrix (not) used in the vertex
         // shader. We just need a way to let the fragment shader run
-        // on all (or most of the) screen pixels.  FIXME: make them
-        // exactly one.
-        const float x = 0.95; // < 1 to actually see the border
-        const float y = 0.95; // < 1 to actually see the border
+        // on all (or most of the) screen pixels.
+        const float x = 1.0; // set < 1 to actually see the border
+        const float y = 1.0; // set < 1 to actually see the border
         const float z = 0.5;  // < 1 not to be clipped
         vertices << QVector3D(+x, -y, z) << QVector3D(+x, +y, z) << QVector3D(-x, -y, z)
                  << QVector3D(-x, -y, z) << QVector3D(+x, +y, z) << QVector3D(-x, +y, z);
