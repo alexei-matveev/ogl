@@ -36,6 +36,7 @@
 **
 ****************************************************************************/
 
+#include <iostream>
 #include "glwidget.h"
 
 //! [0]
@@ -94,6 +95,13 @@ void GlWidget::resizeGL(int width, int height)
 }
 //! [2]
 
+// For debug printing only:
+static std::ostream
+&operator<< (std::ostream &stream, const QVector3D &v)
+{
+  return stream << "{" << v.x() << ", " << v.y() << ", " << v.z() << "}";
+}
+
 //! [3]
 void GlWidget::paintGL()
 {
@@ -101,6 +109,17 @@ void GlWidget::paintGL()
 
     QMatrix4x4 mMatrix;
     QMatrix4x4 vMatrix;
+
+    // debug:
+    {
+        using std::cout;
+        using std::endl;
+        cout << "Vertices in world and transformed coordinates:\n";
+        for (QVector3D *v = vertices.begin(); v != vertices.end(); ++v)
+        {
+            cout << *v << "->" << (pMatrix * vMatrix * mMatrix) * (*v) << endl;
+        }
+    }
 
     shaderProgram.bind();
 
