@@ -1,12 +1,11 @@
 #version 130
 
-//! [0]
-uniform mat4 mvpMatrix;
+uniform mat4 mvpMatrix; // not used
 
 in vec4 vertex;
 
 void main(void)
 {
-    gl_Position = mvpMatrix * vertex;
+    // gl_Position = mvpMatrix * vertex;
+    gl_Position = vertex;
 }
-//! [0]

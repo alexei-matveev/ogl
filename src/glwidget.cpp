@@ -68,15 +68,16 @@ void GlWidget::initializeGL()
     shaderProgram.link();
 
     {
-        // FIXME: these vertices encode a square big enough to cover
-        // the screen with the perspective settings in
-        // resizeGL(). Need a better way to let the fragment shader
-        // run on all screen pixels.
-        const float dx = 10;
-        const float dy = 10;
-        const float dz = -2;
-        vertices << QVector3D(+dx, -dy, dz) << QVector3D(+dx, +dy, dz) << QVector3D(-dx, -dy, dz)
-                 << QVector3D(-dx, -dy, dz) << QVector3D(+dx, +dy, dz) << QVector3D(-dx, +dy, dz);
+        // These vertices encode a square big enough to cover the
+        // screen with for the unit trafo matrix as set in resizeGL()
+        // for use in vertex shader. Need a better way to let the
+        // fragment shader run on all screen pixels.  FIXME: make them
+        // exactly one.
+        const float x = 0.95; // < 1 to actually see the border
+        const float y = 0.95; // < 1 to actually see the border
+        const float z = 0.5;  // < 1 not to be clipped
+        vertices << QVector3D(+x, -y, z) << QVector3D(+x, +y, z) << QVector3D(-x, -y, z)
+                 << QVector3D(-x, -y, z) << QVector3D(+x, +y, z) << QVector3D(-x, +y, z);
     }
 }
 //! [1]
@@ -88,6 +89,8 @@ void GlWidget::resizeGL(int width, int height)
         height = 1;
     }
 
+    // This trafo matrix is not used for vertices of a "screen" square. They
+    // are passed as is to fragment shader, see the trivial vertex shader code.
     pMatrix.setToIdentity();
     pMatrix.perspective(60.0, (float) width / (float) height, 0.001, 1000);
 
