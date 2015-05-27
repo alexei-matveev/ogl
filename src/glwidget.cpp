@@ -110,18 +110,18 @@ static std::ostream
 static QMatrix3x3
 setCamera (const QVector3D &w, float cr)
 {
-    const QVector3D cp(sin(cr), cos(cr), 0.0);
+    const QVector3D eye(0, 0, 0);
+    const QVector3D up(sin(cr), cos(cr), 0.0);
 
-    QVector3D v[3];
-    v[2] = w.normalized();
-    v[0] = QVector3D::crossProduct(v[2], cp).normalized();
-    v[1] = QVector3D::crossProduct(v[0], v[2]).normalized();
+    QMatrix4x4 la;
+    la.lookAt(eye, w, up);
 
-    // FIXME: is there a better way to build a matrix from three columns?
+    // FIXME: make shader use the 4x4 look-at matrix instead?
     QMatrix3x3 m;
     for (int j = 0; j < 3; ++j)
         for (int i = 0; i < 3; ++i)
-            m(i, j) = v[j][i];
+            m(i, j) = la(j, i) * (j == 2? -1: 1);
+            // FIXME: this is ugly ...
 
     return m;
 }
