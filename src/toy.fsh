@@ -2,7 +2,7 @@
 
 uniform vec4 color;
 uniform vec4 iResolution;
-uniform mat3 cameraMatrix;
+uniform mat4 cameraMatrix;
 uniform vec3 cameraPosition;
 
 out vec4 fragColor;
@@ -315,7 +315,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     p.x *= iResolution.x/iResolution.y;
 
     // Ray direction
-    vec3 rd = normalize (vec3 (p.xy, 2.5)) * cameraMatrix;
+    vec3 rd = normalize (vec3 (vec4 (p.xy, 2.5, 0.0) * cameraMatrix));
 
     // render
     vec3 col = render (cameraPosition, rd);

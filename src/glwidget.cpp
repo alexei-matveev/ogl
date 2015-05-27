@@ -107,7 +107,7 @@ static std::ostream
 }
 
 
-static QMatrix3x3
+static QMatrix4x4
 setCamera (const QVector3D &w, float cr)
 {
     const QVector3D eye(0, 0, 0);
@@ -116,14 +116,12 @@ setCamera (const QVector3D &w, float cr)
     QMatrix4x4 la;
     la.lookAt(eye, w, up);
 
-    // FIXME: make shader use the 4x4 look-at matrix instead?
-    QMatrix3x3 m;
     for (int j = 0; j < 3; ++j)
         for (int i = 0; i < 3; ++i)
-            m(i, j) = la(i, j) * (i == 2? -1: 1);
+            la(i, j) *= (i == 2? -1: 1);
             // FIXME: this is ugly ...
 
-    return m;
+    return la;
 }
 
 //! [3]
@@ -151,7 +149,7 @@ void GlWidget::paintGL()
     // shader.
     const QVector3D cameraPosition(-2.17, 3.0, -3.63);
     const QVector3D targetPosition(-0.5, -0.4, 0.5);
-    const QMatrix3x3 cameraMatrix = setCamera (targetPosition - cameraPosition, 0.0);
+    const QMatrix4x4 cameraMatrix = setCamera (targetPosition - cameraPosition, 0.0);
 
     shaderProgram.bind();
 
