@@ -39,11 +39,16 @@
 #include <iostream>
 #include <cmath>
 #include "glwidget.h"
+#include <QMouseEvent>
+#include <QWheelEvent>
 
 //! [0]
 GlWidget::GlWidget(QWidget *parent)
     : QGLWidget(QGLFormat(/* Additional format options */), parent)
 {
+    alpha = 25;
+    beta = -25;
+    distance = 2.5;
 }
 
 GlWidget::~GlWidget()
@@ -172,4 +177,60 @@ void GlWidget::paintGL()
 
     shaderProgram.release();
 }
-//! [3]
+
+
+void GlWidget::mousePressEvent(QMouseEvent *event)
+{
+    lastMousePosition = event->pos();
+
+    event->accept();
+}
+
+
+void GlWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    int deltaX = event->x() - lastMousePosition.x();
+    int deltaY = event->y() - lastMousePosition.y();
+
+    if (event->buttons() & Qt::LeftButton) {
+        alpha -= deltaX;
+        while (alpha < 0) {
+            alpha += 360;
+        }
+        while (alpha >= 360) {
+            alpha -= 360;
+        }
+
+        beta -= deltaY;
+        if (beta < -90) {
+            beta = -90;
+        }
+        if (beta > 90) {
+            beta = 90;
+        }
+
+        updateGL();
+    }
+
+    lastMousePosition = event->pos();
+
+    event->accept();
+}
+
+
+void GlWidget::wheelEvent(QWheelEvent *event)
+{
+    int delta = event->delta();
+
+    if (event->orientation() == Qt::Vertical) {
+        if (delta < 0) {
+            distance *= 1.1;
+        } else if (delta > 0) {
+            distance *= 0.9;
+        }
+
+        updateGL();
+    }
+
+    event->accept();
+}

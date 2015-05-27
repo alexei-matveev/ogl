@@ -57,10 +57,19 @@ protected:
     void resizeGL(int width, int height);
     void paintGL();
 
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
+
 private:
     QMatrix4x4 pMatrix;
     QGLShaderProgram shaderProgram;
     QVector<QVector3D> vertices;
+
+    double alpha;
+    double beta;
+    double distance;
+    QPoint lastMousePosition;
 };
 //! [0]
 
