@@ -37,6 +37,7 @@
 ****************************************************************************/
 
 #include <iostream>
+#include <cmath>
 #include "glwidget.h"
 
 //! [0]
@@ -105,6 +106,26 @@ static std::ostream
   return stream << "{" << v.x() << ", " << v.y() << ", " << v.z() << "}";
 }
 
+
+static QMatrix3x3
+setCamera (const QVector3D &w, float cr)
+{
+    const QVector3D cp(sin(cr), cos(cr), 0.0);
+
+    QVector3D v[3];
+    v[2] = w.normalized();
+    v[0] = QVector3D::crossProduct(v[2], cp).normalized();
+    v[1] = QVector3D::crossProduct(v[0], v[2]).normalized();
+
+    // FIXME: is there a better way to build a matrix from three columns?
+    QMatrix3x3 m;
+    for (int j = 0; j < 3; ++j)
+        for (int i = 0; i < 3; ++i)
+            m(i, j) = v[j][i];
+
+    return m;
+}
+
 //! [3]
 void GlWidget::paintGL()
 {
@@ -124,6 +145,14 @@ void GlWidget::paintGL()
         }
     }
 
+
+    // Camera (ray origin) and target to look at. The 3-vector cameraPosition
+    // is a uniform that is used to start ray marching from in the fragment
+    // shader.
+    const QVector3D cameraPosition(-2.17, 3.0, -3.63);
+    const QVector3D targetPosition(-0.5, -0.4, 0.5);
+    const QMatrix3x3 cameraMatrix = setCamera (targetPosition - cameraPosition, 0.0);
+
     shaderProgram.bind();
 
     {
@@ -131,6 +160,8 @@ void GlWidget::paintGL()
         shaderProgram.setUniformValue("iResolution", QVector4D(s.width(), s.height(), 1, 1));
     }
     shaderProgram.setUniformValue("mvpMatrix", pMatrix * vMatrix * mMatrix);
+    shaderProgram.setUniformValue("cameraMatrix", cameraMatrix);
+    shaderProgram.setUniformValue("cameraPosition", cameraPosition);
 
     shaderProgram.setUniformValue("color", QColor(Qt::white));
 

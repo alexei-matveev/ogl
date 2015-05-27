@@ -2,6 +2,8 @@
 
 uniform vec4 color;
 uniform vec4 iResolution;
+uniform mat3 cameraMatrix;
+uniform vec3 cameraPosition;
 
 out vec4 fragColor;
 
@@ -305,14 +307,6 @@ vec3 render( in vec3 ro, in vec3 rd )
     return vec3( clamp(col,0.0,1.0) );
 }
 
-mat3 setCamera (in vec3 w, float cr)
-{
-    vec3 cw = normalize (w);
-    vec3 cp = vec3(sin(cr), cos(cr),0.0);
-    vec3 cu = normalize( cross(cw,cp) );
-    vec3 cv = normalize( cross(cu,cw) );
-    return mat3( cu, cv, cw );
-}
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
@@ -320,19 +314,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 p = -1.0+2.0*q;
     p.x *= iResolution.x/iResolution.y;
 
-    // Camera (ray origin) and target to look at.
-    vec3 ro = vec3 (-2.17, 3.0, -3.63);
-    vec3 ta = vec3 (-0.5, -0.4, 0.5);
-    // vec3 ta = vec3 (0.0, -0.0, 0.0);
-
-    // camera-to-world transformation
-    mat3 ca = setCamera (ta - ro, 0.0);
-
-    // ray direction
-    vec3 rd = ca * normalize( vec3(p.xy,2.5) );
+    // Ray direction
+    vec3 rd = cameraMatrix * normalize (vec3 (p.xy, 2.5));
 
     // render
-    vec3 col = render( ro, rd );
+    vec3 col = render (cameraPosition, rd);
 
     col = pow( col, vec3(0.4545) );
 
