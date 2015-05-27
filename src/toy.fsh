@@ -305,9 +305,9 @@ vec3 render( in vec3 ro, in vec3 rd )
     return vec3( clamp(col,0.0,1.0) );
 }
 
-mat3 setCamera( in vec3 ro, in vec3 ta, float cr )
+mat3 setCamera (in vec3 w, float cr)
 {
-    vec3 cw = normalize(ta-ro);
+    vec3 cw = normalize (w);
     vec3 cp = vec3(sin(cr), cos(cr),0.0);
     vec3 cu = normalize( cross(cw,cp) );
     vec3 cv = normalize( cross(cu,cw) );
@@ -325,7 +325,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec3 ta = vec3 (-0.5, -0.4, 0.5);
 
     // camera-to-world transformation
-    mat3 ca = setCamera( ro, ta, 0.0 );
+    mat3 ca = setCamera (ta - ro, 0.0);
 
     // ray direction
     vec3 rd = ca * normalize( vec3(p.xy,2.5) );
