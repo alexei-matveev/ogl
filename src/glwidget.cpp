@@ -199,22 +199,19 @@ void GlWidget::mouseMoveEvent(QMouseEvent *event)
     int deltaX = event->x() - lastMousePosition.x();
     int deltaY = event->y() - lastMousePosition.y();
 
-    if (event->buttons() & Qt::LeftButton) {
+    if (event->buttons() & Qt::LeftButton)
+    {
         alpha -= deltaX;
-        while (alpha < 0) {
+        while (alpha < 0)
             alpha += 360;
-        }
-        while (alpha >= 360) {
+        while (alpha >= 360)
             alpha -= 360;
-        }
 
         beta -= deltaY;
-        if (beta < -90) {
+        if (beta < -90)
             beta = -90;
-        }
-        if (beta > 90) {
+        if (beta > 90)
             beta = 90;
-        }
 
         updateGL();
     }
@@ -229,12 +226,12 @@ void GlWidget::wheelEvent(QWheelEvent *event)
 {
     int delta = event->delta();
 
-    if (event->orientation() == Qt::Vertical) {
-        if (delta < 0) {
+    if (event->orientation() == Qt::Vertical)
+    {
+        if (delta < 0)
             distance *= 1.1;
-        } else if (delta > 0) {
+        else if (delta > 0)
             distance *= 0.9;
-        }
 
         updateGL();
     }
