@@ -120,7 +120,7 @@ setCamera (const QVector3D &w, float cr)
     QMatrix3x3 m;
     for (int j = 0; j < 3; ++j)
         for (int i = 0; i < 3; ++i)
-            m(i, j) = la(j, i) * (j == 2? -1: 1);
+            m(i, j) = la(i, j) * (i == 2? -1: 1);
             // FIXME: this is ugly ...
 
     return m;

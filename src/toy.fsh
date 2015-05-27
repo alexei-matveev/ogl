@@ -315,7 +315,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     p.x *= iResolution.x/iResolution.y;
 
     // Ray direction
-    vec3 rd = cameraMatrix * normalize (vec3 (p.xy, 2.5));
+    vec3 rd = normalize (vec3 (p.xy, 2.5)) * cameraMatrix;
 
     // render
     vec3 col = render (cameraPosition, rd);
