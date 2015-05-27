@@ -1,6 +1,5 @@
 #version 130
 
-uniform vec4 color;
 uniform vec4 iResolution;
 uniform mat4 cameraMatrix;
 uniform vec3 cameraPosition;

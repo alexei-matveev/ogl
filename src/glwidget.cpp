@@ -36,11 +36,13 @@
 **
 ****************************************************************************/
 
-#include <iostream>
 #include <cmath>
 #include "glwidget.h"
 #include <QMouseEvent>
 #include <QWheelEvent>
+#ifdef DEBUG
+#include <iostream>
+#endif
 
 //! [0]
 GlWidget::GlWidget(QWidget *parent)
@@ -91,25 +93,21 @@ void GlWidget::initializeGL()
 //! [2]
 void GlWidget::resizeGL(int width, int height)
 {
-    if (height == 0) {
+    if (height == 0)
         height = 1;
-    }
-
-    // This trafo matrix is not used for vertices of a "screen" square. They
-    // are passed as is to fragment shader, see the trivial vertex shader code.
-    pMatrix.setToIdentity();
-    pMatrix.perspective(60.0, (float) width / (float) height, 0.001, 1000);
 
     glViewport(0, 0, width, height);
 }
 //! [2]
 
+#ifdef DEBUG
 // For debug printing only:
 static std::ostream
 &operator<< (std::ostream &stream, const QVector3D &v)
 {
   return stream << "{" << v.x() << ", " << v.y() << ", " << v.z() << "}";
 }
+#endif
 
 
 static QMatrix4x4
@@ -142,21 +140,6 @@ void GlWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    QMatrix4x4 mMatrix;
-    QMatrix4x4 vMatrix;
-
-    // debug:
-    {
-        using std::cout;
-        using std::endl;
-        cout << "Vertices in world and transformed coordinates:\n";
-        for (const QVector3D *v = vertices.begin(); v != vertices.end(); ++v)
-        {
-            cout << *v << "->" << (pMatrix * vMatrix * mMatrix) * (*v) << endl;
-        }
-    }
-
-
     const QMatrix4x4 cameraTransformation = setRotation(alpha, beta);
 
     // Camera position (ray origin), up-direction and target to look at. The
@@ -173,11 +156,8 @@ void GlWidget::paintGL()
         const QSize s = this->size();
         shaderProgram.setUniformValue("iResolution", QVector4D(s.width(), s.height(), 1, 1));
     }
-    shaderProgram.setUniformValue("mvpMatrix", pMatrix * vMatrix * mMatrix);
     shaderProgram.setUniformValue("cameraMatrix", cameraMatrix);
     shaderProgram.setUniformValue("cameraPosition", cameraPosition);
-
-    shaderProgram.setUniformValue("color", QColor(Qt::white));
 
     shaderProgram.setAttributeArray("vertex", vertices.constData());
     shaderProgram.enableAttributeArray("vertex");

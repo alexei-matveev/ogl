@@ -62,7 +62,6 @@ protected:
     void wheelEvent(QWheelEvent *event);
 
 private:
-    QMatrix4x4 pMatrix;
     QGLShaderProgram shaderProgram;
     QVector<QVector3D> vertices;
 
