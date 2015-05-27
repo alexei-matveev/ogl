@@ -46,9 +46,9 @@
 GlWidget::GlWidget(QWidget *parent)
     : QGLWidget(QGLFormat(/* Additional format options */), parent)
 {
-    alpha = 25;
-    beta = -25;
-    distance = 6.0;
+    alpha = 180;
+    beta = -45;
+    distance = 5.0;
 }
 
 GlWidget::~GlWidget()
@@ -113,6 +113,15 @@ static std::ostream
 
 
 static QMatrix4x4
+setRotation (float alpha, float beta)
+{
+    QMatrix4x4 cameraTransformation;
+    cameraTransformation.rotate(alpha, 0, 1, 0);
+    cameraTransformation.rotate(beta, 1, 0, 0);
+    return cameraTransformation;
+}
+
+static QMatrix4x4
 setCamera (const QVector3D &w, const QVector3D &up)
 {
     const QVector3D eye(0, 0, 0);
@@ -148,19 +157,14 @@ void GlWidget::paintGL()
     }
 
 
-    // Camera (ray origin) and target to look at. The 3-vector cameraPosition
-    // is a uniform that is used to start ray marching from in the fragment
-    // shader.
-    // const QVector3D cameraPosition(-2.17, 3.0, -3.63);
+    const QMatrix4x4 cameraTransformation = setRotation(alpha, beta);
+
+    // Camera position (ray origin), up-direction and target to look at. The
+    // 3-vector cameraPosition is a uniform that is used to start ray marching
+    // from in the fragment shader.
+    const QVector3D cameraPosition = cameraTransformation * QVector3D(0, 0, distance);
+    const QVector3D cameraUpDirection = cameraTransformation * QVector3D(0, 1, 0);
     const QVector3D targetPosition(-0.5, -0.4, 0.5);
-
-    QMatrix4x4 cameraTransformation;
-    cameraTransformation.rotate(alpha, 0, 1, 0);
-    cameraTransformation.rotate(beta, 1, 0, 0);
-
-    QVector3D cameraPosition = cameraTransformation * QVector3D(0, 0, distance);
-    QVector3D cameraUpDirection = cameraTransformation * QVector3D(0, 1, 0);
-
     const QMatrix4x4 cameraMatrix = setCamera (targetPosition - cameraPosition, cameraUpDirection);
 
     shaderProgram.bind();
