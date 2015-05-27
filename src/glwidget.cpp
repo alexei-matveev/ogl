@@ -66,9 +66,17 @@ void GlWidget::initializeGL()
     shaderProgram.addShaderFromSourceFile(QGLShader::Fragment, ":/toy.fsh");
     shaderProgram.link();
 
-    const float dep = -2;
-    vertices << QVector3D(1, -1, dep) << QVector3D(1, 1, dep) << QVector3D(-1, -1, dep)
-             << QVector3D(-1, -1, dep) << QVector3D(1, 1, dep) << QVector3D(-1, 1, dep);
+    {
+        // FIXME: these vertices encode a square big enough to cover
+        // the screen with the perspective settings in
+        // resizeGL(). Need a better way to let the fragment shader
+        // run on all screen pixels.
+        const float dx = 10;
+        const float dy = 10;
+        const float dz = -2;
+        vertices << QVector3D(+dx, -dy, dz) << QVector3D(+dx, +dy, dz) << QVector3D(-dx, -dy, dz)
+                 << QVector3D(-dx, -dy, dz) << QVector3D(+dx, +dy, dz) << QVector3D(-dx, +dy, dz);
+    }
 }
 //! [1]
 
