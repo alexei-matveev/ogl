@@ -320,9 +320,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 p = -1.0+2.0*q;
     p.x *= iResolution.x/iResolution.y;
 
-    // Camera and target to look at.
-    vec3 ro = vec3 (-0.5 + 3.2 * cos(4.5), 2.0, 0.5 + 3.2 * sin(4.5));
+    // Camera (ray origin) and target to look at.
+    vec3 ro = vec3 (-1.17, 2.0, -2.63);
     vec3 ta = vec3 (-0.5, -0.4, 0.5);
+    // vec3 ta = vec3 (0.0, -0.0, 0.0);
 
     // camera-to-world transformation
     mat3 ca = setCamera (ta - ro, 0.0);
