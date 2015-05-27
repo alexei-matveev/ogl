@@ -321,7 +321,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     p.x *= iResolution.x/iResolution.y;
 
     // Camera (ray origin) and target to look at.
-    vec3 ro = vec3 (-1.17, 2.0, -2.63);
+    vec3 ro = vec3 (-2.17, 3.0, -3.63);
     vec3 ta = vec3 (-0.5, -0.4, 0.5);
     // vec3 ta = vec3 (0.0, -0.0, 0.0);
 
