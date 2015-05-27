@@ -316,18 +316,13 @@ mat3 setCamera( in vec3 ro, in vec3 ta, float cr )
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    // vec4 iResolution = vec4 (640, 480, 1, 1);
-    vec4 iMouse = iResolution / 2;
     vec2 q = fragCoord.xy/iResolution.xy;
     vec2 p = -1.0+2.0*q;
     p.x *= iResolution.x/iResolution.y;
-    vec2 mo = iMouse.xy/iResolution.xy;
 
-    float time = 15.0; // + iGlobalTime;
-
-    // camera
-    vec3 ro = vec3( -0.5+3.2*cos(0.1*time + 6.0*mo.x), 1.0 + 2.0*mo.y, 0.5 + 3.2*sin(0.1*time + 6.0*mo.x) );
-    vec3 ta = vec3( -0.5, -0.4, 0.5 );
+    // Camera and target to look at.
+    vec3 ro = vec3 (-0.5 + 3.2 * cos(4.5), 2.0, 0.5 + 3.2 * sin(4.5));
+    vec3 ta = vec3 (-0.5, -0.4, 0.5);
 
     // camera-to-world transformation
     mat3 ca = setCamera( ro, ta, 0.0 );
