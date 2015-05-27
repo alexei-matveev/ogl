@@ -118,7 +118,7 @@ void GlWidget::paintGL()
         using std::cout;
         using std::endl;
         cout << "Vertices in world and transformed coordinates:\n";
-        for (QVector3D *v = vertices.begin(); v != vertices.end(); ++v)
+        for (const QVector3D *v = vertices.begin(); v != vertices.end(); ++v)
         {
             cout << *v << "->" << (pMatrix * vMatrix * mMatrix) * (*v) << endl;
         }
